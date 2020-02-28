@@ -232,7 +232,7 @@ module.exports = {
         // let starttime;
 
         // SET FILE UPLOAD DESTINATION
-        stream.pipe(fs.createWriteStream(`${path}/${filename}.mp4`));
+        stream.pipe(fs.createWriteStream(`${path}/${encodeURI(filename)}.mp4`));
 
         // SET LISTENERS
         // if (isFunction(startFn)) {
