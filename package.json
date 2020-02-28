@@ -20,12 +20,15 @@
     "nodemon": "^1.19.4"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.27",
     "axios": "^0.19.0",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "file-system": "^2.2.2",
     "find": "^0.3.0",
     "html-metadata": "^1.7.1",
+    "if-env": "^1.0.4",
     "link-check": "^4.4.7",
     "moment": "^2.24.0",
     "network-speed": "^2.0.5",

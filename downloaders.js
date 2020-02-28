@@ -145,7 +145,7 @@ const metaScrape = require('html-metadata');
 const zipFolder = require("zip-folder");
 // const unzipper = require("unzipper");
 // const find = require("find");
-// const fs = require('file-system');
+const fs = require('file-system');
 
 module.exports = {
     downloadWebsite: (url, path, startFn, endFn, errorFn) => {
@@ -168,17 +168,28 @@ module.exports = {
         return hostname;
     }
 
-    class MyPlugin {
-        apply(registerAction) {
-            registerAction('beforeStart', async ({ options }) => { startFn() });
-            registerAction('afterFinish', async () => { endFn() });
-            registerAction('error', async ({ error }) => { errorFn() });
-        }
-    }
-
     metaScrape(url)
         .then(function (metadata) {
-            const filename = `${metadata.general.title} (${url})`;
+            const filename = `${metadata.general.title} (${extractHostname(url)})`;
+            const fileData = {
+                name: filename,
+                type: "zip"
+            }
+            
+
+            class MyPlugin {
+                apply(registerAction) {
+                    registerAction('beforeStart', async ({ options }) => {
+                        startFn(fileData)
+                        
+                    });
+                    registerAction('afterFinish', async () => {
+                        endFn(fileData)            });
+                    registerAction('error', async ({ error }) => {
+                        errorFn(fileData)
+                    });
+                }
+            }
 
             scrape({
                 urls: [url],
@@ -188,66 +199,62 @@ module.exports = {
                 // recursive: false,
                 // maxRecursiveDepth: maxDepth,
                 filenameGenerator: 'bySiteStructure',
-                directory: `${path}/${filename}`,
+                directory: `${path}/${encodeURI(filename)}`,
                 plugins: [new MyPlugin()]
-
+                
             }).then((result) => {
-                const folderPath = `${path}/${filename}`
-                const htmlPath = `${folderPath}/${result[0].filename}`
+                const folderPath = `${path}/${encodeURI(filename)}`
+                // const htmlPath = `${folderPath}/${result[0].filename}`
                 const zipPath = `${folderPath}.webzip`;
 
                 zipFolder(folderPath, zipPath, function (err) {
                     if (err) {
-                        errorFn(err);
+                        errorFn(fileData);
                     } else {
                         fs.rmdirSync(folderPath);
-
-                        endFn({
-                            url: result[0].url,
-                            htmlPath,
-                            folderPath,
-                            zipPath
-                        })
-
                         
+                        endFn(fileData)
+     
                     }
                 });
                 
                 
-            });
+            })
+             .catch((err) => errorFn(fileData)) ;
         });
         
     },
-    downloadStream: (uri, path, startFn, endFn, errorFn) => {
+    downloadStream: (url, path, startFn, endFn, errorFn) => {
      
-// For now, restricting videos to Youtube
-const downloadVideo = (url, path, start_cb, progress_cb, end_cb, filename) => {
+    // For now, restricting videos to Youtube
     const setStream = (filename, videoInfo) => {
         const stream = ytdl(url);
-        let starttime;
+        // let starttime;
 
         // SET FILE UPLOAD DESTINATION
         stream.pipe(fs.createWriteStream(`${path}/${filename}.mp4`));
 
         // SET LISTENERS
-        if (isFunction(start_cb)) {
-            stream.once('response', () => {
-                starttime = Date.now();
-                start_cb(videoInfo);
-            });
-        }
+        // if (isFunction(startFn)) {
+        stream.once('response', () => {
+            // starttime = Date.now();
+            startFn(videoInfo);
+        });
+        // }
 
-        if (isFunction(progress_cb)) {
-            stream.on('progress', (chunkLength, downloaded, total) => {
-                const percent = downloaded / total;
-                const elapsed = (Date.now() - starttime);
-                progress_cb(percent, elapsed);
-            })
-        }
+        // if (isFunction(progress_cb)) {
+        //     stream.on('progress', (chunkLength, downloaded, total) => {
+        //         const percent = downloaded / total;
+        //         const elapsed = (Date.now() - starttime);
+        //         // progress_cb(percent, elapsed);
+        //     })
+        // }
 
-        if (isFunction(end_cb)) {
-            stream.on('end', end_cb);
-        }
+        // if (isFunction(endFm)) {
+        stream.on('end', () => endFn(videoInfo));
+        // }
+
+        stream.on('error', () => errorFn(videoInfo));
     }
 
     const getID = (url) => {
@@ -273,28 +280,35 @@ const downloadVideo = (url, path, start_cb, progress_cb, end_cb, filename) => {
         ytdl.getInfo(getID(url), (err, info) => {
             if (err) throw err;
 
-            const {
-                title,
-                author,
-                length_seconds
-            } = info;
+            // const {
+            //     title,
+            //     author,
+            //     length_seconds
+            // } = info;
 
-            const videoInfo = {
-                title,
-                author,
-                length_seconds
-            };
+            // const videoInfo = {
+            //     title,
+            //     author,
+            //     length_seconds
+            // };
 
-            if (!filename) {
-                setStream(info.title, videoInfo);
-            } else {
-                setStream(filename, videoInfo);
+            const fileData = {
+                name: info.title,
+                type: "mp4"
             }
+
+            setStream(info.title, fileData);
+
+            // if (!filename) {
+            //     setStream(videoInfo.title, videoInfo);
+            // } else {
+            //     setStream(filename, videoInfo);
+            // }
         });
     } else {
         return null;
     }
-};   
+   
     },
     downloadFile: (uri, path, startFn, endFn, errorFn) => {
         request.head(uri, function (err, res, body) {
@@ -302,7 +316,7 @@ const downloadVideo = (url, path, start_cb, progress_cb, end_cb, filename) => {
         // Extract file type
         const type = res.headers[`content-type`].split("/")[1];
 
-        const fileData = { filename, type };
+        const fileData = { name: filename, type };
             
         request(uri)
         .on('response', function (response) {
@@ -319,15 +333,15 @@ const downloadVideo = (url, path, start_cb, progress_cb, end_cb, filename) => {
 },
 }
 
-const linkCheck = require('link-check');
+// const linkCheck = require('link-check');
  
-linkCheck('http://sdkjadksj.com/', function (err, result) {
-    if (err) {
-        console.error(err);
-        return;
-    }
-    console.log(`${result.link} is ${result.status}`);
-});
+// linkCheck('http://sdkjadksj.com/', function (err, result) {
+//     if (err) {
+//         console.error(err);
+//         return;
+//     }
+//     console.log(`${result.link} is ${result.status}`);
+// });
 
 // Unzip webpage folder, locate path to index.html
 // -------------------------------------------------------------------------------------
