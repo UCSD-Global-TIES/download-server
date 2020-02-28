@@ -13,6 +13,45 @@ http.listen(PORT, function() {
   console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`);
 });
 
-io.on('connection', function (client) {
-  console.log("User connected!")
+
+const { downloadWebsite, downloadStream, downloadFile } = require("./downloaders");
+
+io.on('connection', function (client) {  
+  
+  const startFn = (fileData) => {
+    io.emit("download-started", fileData);
+  }
+
+  const endFn = (fileData) => {
+    io.emit("download-completed", fileData);
+  }
+
+  const errorFn = (fileData) => {
+    io.emit("download-error", fileData);
+  }
+
+  app.post("api/download", (req, res) => {
+    const { url, type } = req.body;
+
+    switch (type) {
+      case "website":
+        downloadWebsite(url, path, startFn, endFn, errorFn);
+        res.json({})
+        break;
+      case "stream":
+        downloadStream(url, path, startFn, endFn, errorFn);
+        res.json({})
+        break;
+      case "file":
+        downloadFile(url, path, startFn, endFn, errorFn);
+        res.json({})
+        break;
+      default:
+        res.json(null);
+        break;
+    }
+
+
+
+  })
 })

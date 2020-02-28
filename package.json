@@ -26,6 +26,7 @@
     "file-system": "^2.2.2",
     "find": "^0.3.0",
     "html-metadata": "^1.7.1",
+    "link-check": "^4.4.7",
     "moment": "^2.24.0",
     "network-speed": "^2.0.5",
     "node-wifi": "^2.0.12",
