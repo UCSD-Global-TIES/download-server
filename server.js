@@ -14,13 +14,8 @@ app.use(cors({
 }))
 
 // Start the API server
-http.listen(PORT, function() {
+http.listen(PORT, function () {
   console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`);
-});
-
-const wifi = require("node-wifi")
-wifi.init({
-    iface: null // network interface, choose a random wifi interface if set to null
 });
 
 const { downloadWebsite, downloadStream, downloadFile } = require("./downloaders");
@@ -30,18 +25,18 @@ const ytdl = require('ytdl-core')
 // Download Path
 const path = "../downloads"
 
-io.on('connection', function (client) {  
-  
+io.on('connection', function (client) {
+
   const startFn = (fileData) => {
     const tmp = { ...fileData }
     tmp.status = "Started"
-    io.emit("download-start", {...tmp});
+    io.emit("download-start", { ...tmp });
   }
 
   const endFn = (fileData) => {
     const tmp = { ...fileData }
     tmp.status = "Completed"
-    io.emit("download-end",  {...tmp});
+    io.emit("download-end", { ...tmp });
   }
 
   const errorFn = (fileData) => {
@@ -49,27 +44,27 @@ io.on('connection', function (client) {
     tmp.status = "Error";
     io.emit("download-error", { ...tmp });
   }
-  
-    const validateUrl = (url, type, cb) => {
-      switch (type) {
-        case "website":
-        case "file":
-          linkCheck(url, function (err, result) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-                  
-                  if (result.status === "alive") cb(true)
-                  else cb(false)
-          });
-          break;
-        case "stream":
-           cb(ytdl.validateURL(url));
-          break;
-      }
-  
+
+  const validateUrl = (url, type, cb) => {
+    switch (type) {
+      case "website":
+      case "file":
+        linkCheck(url, function (err, result) {
+          if (err) {
+            console.error(err);
+            return;
+          }
+
+          if (result.status === "alive") cb(true)
+          else cb(false)
+        });
+        break;
+      case "stream":
+        cb(ytdl.validateURL(url));
+        break;
     }
+
+  }
 
   app.post("/api/download", (req, res) => {
     const { url, type } = req.body;
@@ -87,44 +82,48 @@ io.on('connection', function (client) {
         validateUrl(url, type, (isValid) => {
           if (isValid) {
 
-          downloadStream(url, path, startFn, endFn, errorFn);
+            downloadStream(url, path, startFn, endFn, errorFn);
             res.json({})
-            } else res.json(null)
-          })
+          } else res.json(null)
+        })
         break;
       case "file":
-          validateUrl(url, type, (isValid) => {
+        validateUrl(url, type, (isValid) => {
           if (isValid) {
             downloadFile(url, path, startFn, endFn, errorFn);
-              res.json({})
-            } else res.json(null)
-          })
+            res.json({})
+          } else res.json(null)
+        })
         break;
       default:
         res.json(null);
         break;
     }
 
-
-
   })
 
+  const NetworkSpeed = require('network-speed');
+  const checkInternetConnected = require('check-internet-connected');
   app.get("/api/connection", (req, res) => {
-        // List the current wifi connections
-    wifi.getCurrentConnections( function (err, currentConnections) {
-        if (err) {
-            console.log(err);
-        }
+    const testNetworkSpeed = new NetworkSpeed();
+    
+    async function getNetworkDownloadSpeed() {
+      const baseUrl = 'http://eu.httpbin.org/stream-bytes/50000000';
+      const fileSizeInBytes = 50000000;
+      const speed = await testNetworkSpeed.checkDownloadSpeed(baseUrl, fileSizeInBytes);
+      res.json(speed);
+    }
 
-        if (!currentConnections) {
-          res.json(null)
-        }
-        else if (!currentConnections.length) {
-          res.json(null)
-        } else {
-          res.json(currentConnections[0].quality)
-        }
-
+    checkInternetConnected()
+    .then(() => {
+      getNetworkDownloadSpeed();
+    })
+    .catch(() => {
+      res.json(null); 
     });
+
+
+
   })
+
 })

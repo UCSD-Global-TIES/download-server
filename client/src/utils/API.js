@@ -5,9 +5,7 @@ const testNetworkSpeed = new NetworkSpeed();
 
 export default {
   getConnectionQuality: (cb) => {
-
-    axios.get("/api/connection")
-    .then(() => cb())
+    return axios.get("/api/connection")
   },
   getDownloadSpeed: async (cb) => {
      const baseUrl = 'http://eu.httpbin.org/stream-bytes/50000000';

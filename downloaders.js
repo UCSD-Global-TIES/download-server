@@ -1,143 +1,3 @@
-// const fs = require('fs');
-// var wifi = require("node-wifi");
-// wifi.init({
-//     iface: null // network interface, choose a random wifi interface if set to null
-// });
-
-// // Material Icons - Wifi connection icons
-// // List the current wifi connections
-// wifi.getCurrentConnections(function (err, currentConnections) {
-//     if (err) {
-//         console.log(err);
-//     }
-
-//     if (!currentConnections) {
-//         console.log("You are not connected to the Internet");
-//     }
-//     else if (!currentConnections.length) {
-//         console.log("You are not connected to the Internet");
-//     } else {
-//         const currentConnection = currentConnections[0]
-//         console.log(currentConnection, currentConnection.quality);
-//     }
-
-// });
-
-// const NetworkSpeed = require('network-speed');
-// const testNetworkSpeed = new NetworkSpeed();
-
-// // getNetworkDownloadSpeed();
-
-// async function getNetworkDownloadSpeed() {
-//     const baseUrl = 'http://eu.httpbin.org/stream-bytes/50000000';
-//     const fileSizeInBytes = 50000000;
-//     const speed = await testNetworkSpeed.checkDownloadSpeed(baseUrl, fileSizeInBytes);
-//     console.log(speed);
-// }
-
-// function isFunction(x) {
-//     return Object.prototype.toString.call(x) == '[object Function]';
-// }
-
-// // For now, restricting videos to Youtube
-// const downloadVideo = (url, path, start_cb, progress_cb, end_cb, filename) => {
-//     const setStream = (filename, videoInfo) => {
-//         const stream = ytdl(url);
-//         let starttime;
-
-//         // SET FILE UPLOAD DESTINATION
-//         stream.pipe(fs.createWriteStream(`${path}/${filename}.mp4`));
-
-//         // SET LISTENERS
-//         if (isFunction(start_cb)) {
-//             stream.once('response', () => {
-//                 starttime = Date.now();
-//                 start_cb(videoInfo);
-//             });
-//         }
-
-//         if (isFunction(progress_cb)) {
-//             stream.on('progress', (chunkLength, downloaded, total) => {
-//                 const percent = downloaded / total;
-//                 const elapsed = (Date.now() - starttime);
-//                 progress_cb(percent, elapsed);
-//             })
-//         }
-
-//         if (isFunction(end_cb)) {
-//             stream.on('end', end_cb);
-//         }
-//     }
-
-//     const getID = (url) => {
-//         if (url.includes("youtu.be")) {
-//             return url.split("/")[url.split("/").length - 1]
-//         }
-
-
-//         const params = url.split("?");
-//         for (const param of params) {
-//             const type = param.split("=")[0];
-//             const value = param.split("=")[1];
-
-//             if (type === "v") {
-//                 return value;
-//             }
-//         }
-//     }
-
-//     // If the url goes to a valid video, download file
-//     if (ytdl.validateURL(url) && (url.includes("youtube.com") || url.includes("youtu.be"))) {
-//         // Retrieve video name if no name provided
-//         ytdl.getInfo(getID(url), (err, info) => {
-//             if (err) throw err;
-
-//             const {
-//                 title,
-//                 author,
-//                 length_seconds
-//             } = info;
-
-//             const videoInfo = {
-//                 title,
-//                 author,
-//                 length_seconds
-//             };
-
-//             if (!filename) {
-//                 setStream(info.title, videoInfo);
-//             } else {
-//                 setStream(filename, videoInfo);
-//             }
-//         });
-//     } else {
-//         return null;
-//     }
-// };
-
-// const startFn = (videoInfo) => {
-//     console.log(`Starting download of ${videoInfo.title}!`);
-
-// };
-// const progressFn = (percent, elapsed) => {
-//     console.log(`${(percent * 100).toFixed(2)}% downloaded!`);
-//     // console.log(`${(elapsed / 1000).toFixed(2)} seconds elapsed.`);
-
-// };
-// const endFn = () => {
-//     console.log("Finished!");
-// };
-// // downloadVideo('https://youtu.be/garegCgMxxg', ".", startFn, progressFn, endFn, "test");
-
-
-// // Destination directory can't already exist 
-// // Even one level of recursion takes a long time
-// // No way it seems to track download progress or size
-// // Ideally, retrieve website title
-// const downloadPage = (url, path, startFn, endFn, errorFn) => {
-   
-// }
-
 const ytdl = require('ytdl-core');
 const scrape = require('website-scraper');
 const request = require("request");
@@ -146,6 +6,12 @@ const zipFolder = require("zip-folder");
 // const unzipper = require("unzipper");
 // const find = require("find");
 const fs = require('file-system');
+const encodeURL = require('encodeurl')
+
+const encodeUrl = (url) => {
+
+    return encodeURL(url).replace("?", "%3F")
+}
 
 module.exports = {
     downloadWebsite: (url, path, startFn, endFn, errorFn) => {
@@ -199,11 +65,11 @@ module.exports = {
                 // recursive: false,
                 // maxRecursiveDepth: maxDepth,
                 filenameGenerator: 'bySiteStructure',
-                directory: `${path}/${encodeURI(filename)}`,
+                directory: `${path}/${encodeUrl(filename)}`,
                 plugins: [new MyPlugin()]
                 
             }).then((result) => {
-                const folderPath = `${path}/${encodeURI(filename)}`
+                const folderPath = `${path}/${encodeUrl(filename)}`
                 // const htmlPath = `${folderPath}/${result[0].filename}`
                 const zipPath = `${folderPath}.webzip`;
 
@@ -232,7 +98,7 @@ module.exports = {
         // let starttime;
 
         // SET FILE UPLOAD DESTINATION
-        stream.pipe(fs.createWriteStream(`${path}/${encodeURI(filename)}.mp4`));
+        stream.pipe(fs.createWriteStream(`${path}/${encodeUrl(filename)}.mp4`));
 
         // SET LISTENERS
         // if (isFunction(startFn)) {
@@ -280,18 +146,6 @@ module.exports = {
         ytdl.getInfo(getID(url), (err, info) => {
             if (err) throw err;
 
-            // const {
-            //     title,
-            //     author,
-            //     length_seconds
-            // } = info;
-
-            // const videoInfo = {
-            //     title,
-            //     author,
-            //     length_seconds
-            // };
-
             const fileData = {
                 name: info.title,
                 type: "mp4"
@@ -299,11 +153,6 @@ module.exports = {
 
             setStream(info.title, fileData);
 
-            // if (!filename) {
-            //     setStream(videoInfo.title, videoInfo);
-            // } else {
-            //     setStream(filename, videoInfo);
-            // }
         });
     } else {
         return null;

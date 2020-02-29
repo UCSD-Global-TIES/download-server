@@ -4,7 +4,7 @@ import { ListItemAvatar, Avatar, LinearProgress, Badge, Dialog, DialogTitle, Fab
 import SearchIcon from '@material-ui/icons/Search';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Beforeunload } from 'react-beforeunload';
-import moment from "moment"
+// import moment from "moment"
 
 import "../../utils/flowHeaders.min.css";
 import { faCloudUploadAlt, faDownload, faChevronLeft, faChevronRight, faSpinner, faFilePdf, faFileAudio, faFileCode, faFileCsv, faFileImage, faFileArchive, faFileAlt, faFileDownload, faFileVideo, faFileWord, faFileExcel } from "@fortawesome/free-solid-svg-icons";
@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
     },
     vc: {
         maxWidth: "700px",
-        width: "90%",
+        width: "100%",
         margin: "auto"
     },
     searchbar: {
@@ -47,7 +47,7 @@ function DownloadQueue(props) {
     const [downloads, setDownloads] = useState([]);
     const [filteredDownloads, setFilteredDownloads] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
-    const [modalShow, setModalShow] = useState(false);
+    // const [modalShow, setModalShow] = useState(false);
     // const [PROPS, setProps] = useState(props);
 
     // const handleClose = () => {
@@ -83,17 +83,17 @@ function DownloadQueue(props) {
 
     }
 
-    function convertFileSize(bytes, decimals = 2) {
-        if (bytes === 0) return '0 Bytes';
+    // function convertFileSize(bytes, decimals = 2) {
+    //     if (bytes === 0) return '0 Bytes';
 
-        const k = 1024;
-        const dm = decimals < 0 ? 0 : decimals;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    //     const k = 1024;
+    //     const dm = decimals < 0 ? 0 : decimals;
+    //     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
+    //     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-    }
+    //     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    // }
 
     const handleQueueUpdate = (fileData) => {
         // Locate file in downloads
@@ -108,7 +108,7 @@ function DownloadQueue(props) {
         // If it doesn't exist, push into array
         else {
             const tmp = downloads;
-            tmp.push(fileData)
+            tmp.unshift(fileData)
         }
 
         // Set downloads to new array
@@ -158,11 +158,11 @@ function DownloadQueue(props) {
 
                 </Fab> */}
 
-                {/* <Beforeunload onBeforeunload={downloads.filter((item) => item.status === "Pending").length ? () => "You have pending downloads, are you sure you want to leave this page? (downloads will be deleted)" : (e) => e} /> */}
+                <Beforeunload onBeforeunload={downloads.filter((item) => item.status === "Started").length ? () => "You have pending downloads, are you sure you want to leave this page?" : (e) => e} />
 
                 {/* <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={modalShow} >
-                    <DialogTitle id="simple-dialog-title">Downloads ({downloads.filter((item) => item.status === "Pending").length} pending)</DialogTitle> */}
-                    <div style={{ width: "100%" }}>
+                    <DialogTitle id="simple-dialog-title">Downloads ({downloads.filter((item) => item.status === "Started").length} pending)</DialogTitle> */}
+                    <div style={{ padding: "1rem" }}>
 
 
                         <FormControl className={classes.searchbar}>
@@ -178,7 +178,7 @@ function DownloadQueue(props) {
                             className={classes.root}
                             subheader={
                                 <ListSubheader component="div" style={{ display: "flex", justifyContent: "space-between" }}>
-                                    <span>Files</span>
+                                    <span>Downloads ({downloads.filter((item) => item.status === "Started").length} pending)</span>
                                     <ButtonGroup size="small" aria-label="small outlined button group" style={{
                                         paddingTop: "9px",
                                         height: "2rem"
