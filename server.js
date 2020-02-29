@@ -20,7 +20,7 @@ http.listen(PORT, function () {
 
 // Run test command
 const execSh = require("exec-sh");
-execSh("cd client && npm run start", function(err){
+execSh("cd client && react-scripts start", function(err){
   if (err) {
     console.log("Exit code: ", err.code);
     return;

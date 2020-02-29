@@ -3,7 +3,7 @@ import API from './utils/API';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from "clsx"
 import "./App.css";
-import { Popover, Fab, FormHelperText, Typography, Button, Select, TextField, InputLabel, MenuItem, FormControl } from "@material-ui/core"
+import { Slide, Dialog, DialogTitle, DialogContent, DialogContentText, Popover, Fab, FormHelperText, Typography, Button, Select, TextField, InputLabel, MenuItem, FormControl } from "@material-ui/core"
 import DownloadQueue from "./components/DownloadQueue"
 
 import SocketContext from './socket-context'
@@ -94,7 +94,7 @@ function App() {
     // Only validate if user has entered input and a non-empty string
     if (downloadData['url']) {
       if (downloadData['url'].length) {
-        if (!downloadData['url'].includes("http") || !downloadData['url'].includes("https")) {
+        if (!(downloadData['url'].includes("http") || downloadData['url'].includes("https"))) {
           // URL IS INVALID
           error['url'] = true;
           message['url'] = invalidHttp;
@@ -136,13 +136,25 @@ function App() {
 
           // If url is invalid
           if (!res.data) {
-            console.log("error")
+            let err = { ...error };
+            let msg = { ...message };
+            let sc = { ...success };
+
+            err['url'] = true;
+            msg['url'] = `The link specified does not point towards a valid ${downloadData['type']}!`;
+            sc['url'] = false;
+
+            setSuccess({ ...sc });
+            setError({ ...err });
+            setMessage({ ...msg });
+
+          } else {
+            setSuccess({});
+            setError({});
+            setDownloadData({});
+            setMessage({});
           }
 
-          setDownloadData({});
-          setSuccess({});
-          setError({});
-          setMessage({});
         })
     } else {
       // Not all fields are filled out or valid
@@ -179,13 +191,15 @@ function App() {
     API.getConnectionQuality()
       .then((res) => {
         if (res.data) {
-          setConnected(true);
+          if(!connected) setConnected(true);
           setSpeed(res.data.mbps)
           setWifiIcon(strengthIcons[getStrengthLevel(res.data.mbps)]);
 
         } else {
-          setConnected(false);
-          setWifiIcon(<SignalWifiOffIcon />);
+          if (connected) {
+            setConnected(false);
+            setWifiIcon(<SignalWifiOffIcon />);
+          }
         }
 
       })
@@ -195,13 +209,15 @@ function App() {
         .then((res) => {
 
           if (res.data) {
-            setConnected(true);
+            if(!connected) setConnected(true);
             setSpeed(res.data.mbps)
             setWifiIcon(strengthIcons[getStrengthLevel(res.data.mbps)]);
 
           } else {
-            setConnected(false);
-            setWifiIcon(<SignalWifiOffIcon />);
+            if (connected) {
+              setConnected(false);
+              setWifiIcon(<SignalWifiOffIcon />);
+            }
           }
 
         })
@@ -222,6 +238,10 @@ function App() {
   const closeSpeed = () => {
     setAnchorEl(null);
   };
+
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -244,11 +264,24 @@ function App() {
           vertical: 'center',
           horizontal: 'center',
         }}
-        
+
       >
         <Typography variant="overline" className={classes.speedPopover}>{Math.floor(speed / 8)} mb/s</Typography>
       </Popover>
-
+      <Dialog
+        open={!connected}
+        TransitionComponent={Transition}
+        keepMounted
+      >
+        <DialogContent>
+              <Typography align={"center"} variant={"h6"} color={"textSecondary"}> No Network Connection Detected </Typography>
+              <div className={classes.flex} style={{padding: "2rem"}}>
+                <div className={classes.flexCenter}>
+                    <SignalWifiOffIcon style={{color: "orange", fontSize: 60}}/>
+                </div>
+              </div>
+        </DialogContent>
+      </Dialog>
       <div className={clsx("App", classes.flex, classes.app)}>
         <div className={clsx(classes.main, classes.flexCenter)}>
           <Typography
