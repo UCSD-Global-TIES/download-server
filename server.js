@@ -18,9 +18,27 @@ http.listen(PORT, function () {
   console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`);
 });
 
+// Run test command
+const execSh = require("exec-sh");
+execSh("cd client && npm run start", function(err){
+  if (err) {
+    console.log("Exit code: ", err.code);
+    return;
+  }
+ 
+  // collect streams output
+  // var child = execSh(["bash -c id", "echo lorem >&2"], true,
+  //   function(err, stdout, stderr){
+  //     console.log("error: ", err);
+  //     console.log("stdout: ", stdout);
+  //     console.log("stderr: ", stderr);
+  //   });
+});
+
 const { downloadWebsite, downloadStream, downloadFile } = require("./downloaders");
 const linkCheck = require('link-check');
 const ytdl = require('ytdl-core')
+
 
 // Download Path
 const path = "../downloads"
