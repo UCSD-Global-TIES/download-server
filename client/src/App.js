@@ -3,7 +3,7 @@ import API from './utils/API';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from "clsx"
 import "./App.css";
-import { Popover, Fab, FormHelperText, Typography, Button, Select, TextField, InputLabel, MenuItem, FormControl, Badge } from "@material-ui/core"
+import { Popover, Fab, FormHelperText, Typography, Button, Select, TextField, InputLabel, MenuItem, FormControl } from "@material-ui/core"
 import DownloadQueue from "./components/DownloadQueue"
 
 import SocketContext from './socket-context'
@@ -249,7 +249,7 @@ function App() {
         <Typography variant="overline" className={classes.speedPopover}>{Math.floor(speed / 8)} mb/s</Typography>
       </Popover>
 
-      <div className="App" className={clsx(classes.flex, classes.app)}>
+      <div className={clsx("App", classes.flex, classes.app)}>
         <div className={clsx(classes.main, classes.flexCenter)}>
           <Typography
             variant="h4"

@@ -10,7 +10,7 @@ const encodeURL = require('encodeurl')
 
 const encodeUrl = (url) => {
 
-    return encodeURL(url).replace("?", "%3F")
+    return encodeURL(url).replace("?", "%3F").replace("/", "%2F")
 }
 
 module.exports = {
@@ -129,7 +129,8 @@ module.exports = {
         }
 
 
-        const params = url.split("?");
+        let params = url.split("?")[1];
+        params = params.split("&");
         for (const param of params) {
             const type = param.split("=")[0];
             const value = param.split("=")[1];
