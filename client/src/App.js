@@ -268,20 +268,28 @@ function App() {
       >
         <Typography variant="overline" className={classes.speedPopover}>{Math.floor(speed / 8)} mb/s</Typography>
       </Popover>
-      <Dialog
-        open={!connected}
-        TransitionComponent={Transition}
-        keepMounted
-      >
-        <DialogContent>
-              <Typography align={"center"} variant={"h6"} color={"textSecondary"}> No Network Connection Detected </Typography>
-              <div className={classes.flex} style={{padding: "2rem"}}>
-                <div className={classes.flexCenter}>
-                    <SignalWifiOffIcon style={{color: "orange", fontSize: 60}}/>
-                </div>
-              </div>
-        </DialogContent>
-      </Dialog>
+      
+      {
+        !connected ? 
+          <Dialog
+            open={!connected}
+            TransitionComponent={Transition}
+            keepMounted
+          >
+            <DialogContent>
+                  <Typography align={"center"} variant={"h6"} color={"textSecondary"}> No Network Connection Detected </Typography>
+                  <div className={classes.flex} style={{padding: "2rem"}}>
+                    <div className={classes.flexCenter}>
+                        <SignalWifiOffIcon style={{color: "orange", fontSize: 60}}/>
+                    </div>
+                  </div>
+            </DialogContent>
+          </Dialog>
+          
+          :""
+      }
+
+
       <div className={clsx("App", classes.flex, classes.app)}>
         <div className={clsx(classes.main, classes.flexCenter)}>
           <Typography

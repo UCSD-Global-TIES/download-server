@@ -20,20 +20,20 @@ http.listen(PORT, function () {
 
 // Run test command
 const execSh = require("exec-sh");
-execSh("cd client && react-scripts start", function(err){
-  if (err) {
-    console.log("Exit code: ", err.code);
-    return;
-  }
+// execSh("cd client && react-scripts start", function(err){
+//   if (err) {
+//     console.log("Exit code: ", err.code);
+//     return;
+//   }
  
-  // collect streams output
-  // var child = execSh(["bash -c id", "echo lorem >&2"], true,
-  //   function(err, stdout, stderr){
-  //     console.log("error: ", err);
-  //     console.log("stdout: ", stdout);
-  //     console.log("stderr: ", stderr);
-  //   });
-});
+//   // collect streams output
+//   // var child = execSh(["bash -c id", "echo lorem >&2"], true,
+//   //   function(err, stdout, stderr){
+//   //     console.log("error: ", err);
+//   //     console.log("stdout: ", stdout);
+//   //     console.log("stderr: ", stderr);
+//   //   });
+// });
 
 const { downloadWebsite, downloadStream, downloadFile } = require("./downloaders");
 const linkCheck = require('link-check');
