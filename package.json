@@ -1,8 +1,9 @@
 {
-  "name": "mern",
+  "name": "download-server",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "bin": "server.js",
   "scripts": {
     "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
     "start:prod": "node server.js",
@@ -26,6 +27,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "encodeurl": "^1.0.2",
+    "exec-sh": "^0.3.4",
     "express": "^4.17.1",
     "file-system": "^2.2.2",
     "find": "^0.3.0",

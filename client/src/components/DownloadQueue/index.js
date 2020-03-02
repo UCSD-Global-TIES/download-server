@@ -1,13 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-import { ListItemAvatar, Avatar, LinearProgress, Badge, Dialog, DialogTitle, Fab, List, ListItem, ListItemIcon, ListItemText, ListSubheader, Button, ButtonGroup, InputAdornment, FormControl, InputLabel, Input, Typography } from "@material-ui/core";
+import { ListItemAvatar, Avatar, 
+    // LinearProgress, Badge, Dialog, DialogTitle, Fab, 
+    List, ListItem, 
+    // ListItemIcon, 
+    ListItemText, ListSubheader, Button, ButtonGroup, InputAdornment, FormControl, InputLabel, Input, Typography } from "@material-ui/core";
 import SearchIcon from '@material-ui/icons/Search';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Beforeunload } from 'react-beforeunload';
 // import moment from "moment"
 
 import "../../utils/flowHeaders.min.css";
-import { faCloudUploadAlt, faDownload, faChevronLeft, faChevronRight, faSpinner, faFilePdf, faFileAudio, faFileCode, faFileCsv, faFileImage, faFileArchive, faFileAlt, faFileDownload, faFileVideo, faFileWord, faFileExcel } from "@fortawesome/free-solid-svg-icons";
+import {faDownload, faChevronLeft, faChevronRight, faFilePdf, faFileAudio, faFileCode, faFileCsv, faFileImage, faFileArchive, faFileAlt, faFileDownload, faFileVideo, faFileWord, faFileExcel } from "@fortawesome/free-solid-svg-icons";
 import SocketContext from "../../socket-context"
 
 const useStyles = makeStyles(theme => ({
@@ -145,7 +149,8 @@ function DownloadQueue(props) {
         for (const event of events) {
             socket.on(event, data => handleQueueUpdate(data))
         }
-
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
