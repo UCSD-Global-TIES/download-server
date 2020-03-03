@@ -62,6 +62,6 @@ client/.env
 .next
 
 # ignore executables
-./download-server-linux
-./download-server-macos
-./download-server-win
+download-server-linux
+download-server-macos
+download-server-win.exe
