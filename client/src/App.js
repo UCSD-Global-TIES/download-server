@@ -224,7 +224,7 @@ function App() {
     }, 5000)
 
 
-  });
+  }, []);
 
   const contentTypes = [
     "website", "stream", "file"
