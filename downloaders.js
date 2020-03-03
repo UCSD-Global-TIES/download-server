@@ -64,12 +64,12 @@ module.exports = {
                 },
                 // recursive: false,
                 // maxRecursiveDepth: maxDepth,
-                filenameGenerator: 'bySiteStructure',
-                directory: `${path}/${encodeUrl(filename)}`,
+                // filenameGenerator: 'bySiteStructure',
+                directory: `${path}/${encodeURIComponent(filename)}`,
                 plugins: [new MyPlugin()]
                 
             }).then((result) => {
-                const folderPath = `${path}/${encodeUrl(filename)}`
+                const folderPath = `${path}/${encodeURIComponent(filename)}`
                 // const htmlPath = `${folderPath}/${result[0].filename}`
                 const zipPath = `${folderPath}.webzip`;
 
@@ -98,7 +98,7 @@ module.exports = {
         // let starttime;
 
         // SET FILE UPLOAD DESTINATION
-        stream.pipe(fs.createWriteStream(`${path}/${encodeUrl(filename)}.mp4`));
+        stream.pipe(fs.createWriteStream(`${path}/${encodeURIComponent(filename)}.mp4`));
 
         // SET LISTENERS
         // if (isFunction(startFn)) {
