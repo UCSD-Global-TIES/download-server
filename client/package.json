@@ -2,6 +2,7 @@
   "name": "download-server",
   "version": "0.1.0",
   "private": true,
+  "bin": "main.js",
   "proxy": "http://localhost:3001/",
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^5.12.1",
