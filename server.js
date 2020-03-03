@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors')
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
+const fs = require('fs');
 const PORT = process.env.PORT || 3001;
 
 // Define middleware here
@@ -19,7 +20,7 @@ http.listen(PORT, function () {
 });
 
 // Run test command
-const execSh = require("exec-sh");
+// const execSh = require("exec-sh");
 // execSh("cd client && react-scripts start", function(err){
 //   if (err) {
 //     console.log("Exit code: ", err.code);
@@ -40,8 +41,11 @@ const linkCheck = require('link-check');
 const ytdl = require('ytdl-core')
 
 
-// Download Path
-const path = "../downloads"
+// Download Path (create directory)
+const path = "../sg-downloads";
+if (!fs.existsSync(path)){
+  fs.mkdirSync(path);
+}
 
 io.on('connection', function (client) {
 
