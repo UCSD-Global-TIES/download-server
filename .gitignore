@@ -60,3 +60,8 @@ client/.env
 
 # next.js build output
 .next
+
+# ignore executables
+./download-server-linux
+./download-server-macos
+./download-server-win
