@@ -38,6 +38,7 @@
     "moment": "^2.24.0",
     "network-speed": "^2.0.5",
     "node-wifi": "^2.0.12",
+    "pkg": "^4.4.4",
     "react-router-dom": "^5.1.2",
     "request": "^2.88.2",
     "socket.io": "^2.3.0",
