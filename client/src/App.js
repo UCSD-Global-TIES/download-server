@@ -3,7 +3,7 @@ import API from './utils/API';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from "clsx"
 import "./App.css";
-import { Slide, Dialog, DialogTitle, DialogContent, DialogContentText, Popover, Fab, FormHelperText, Typography, Button, Select, TextField, InputLabel, MenuItem, FormControl } from "@material-ui/core"
+import { Slide, Dialog, DialogContent, Popover, Fab, FormHelperText, Typography, Button, Select, TextField, InputLabel, MenuItem, FormControl } from "@material-ui/core"
 import DownloadQueue from "./components/DownloadQueue"
 
 import SocketContext from './socket-context'
@@ -224,7 +224,7 @@ function App() {
     }, 5000)
 
 
-  }, []);
+  });
 
   const contentTypes = [
     "website", "stream", "file"
