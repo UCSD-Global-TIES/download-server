@@ -3,8 +3,6 @@ const scrape = require('website-scraper');
 const request = require("request");
 const metaScrape = require('html-metadata');
 const zipFolder = require("zip-folder");
-// const unzipper = require("unzipper");
-// const find = require("find");
 const fs = require('file-system');
 const encodeURL = require('encodeurl')
 
@@ -68,7 +66,7 @@ module.exports = {
                 directory: `${path}/${encodeURIComponent(filename)}`,
                 plugins: [new MyPlugin()]
                 
-            }).then((result) => {
+            }).then(() => {
                 const folderPath = `${path}/${encodeURIComponent(filename)}`
                 // const htmlPath = `${folderPath}/${result[0].filename}`
                 const zipPath = `${folderPath}.webzip`;
@@ -86,7 +84,7 @@ module.exports = {
                 
                 
             })
-             .catch((err) => errorFn(fileData)) ;
+             .catch(() => errorFn(fileData)) ;
         });
         
     },
@@ -101,12 +99,10 @@ module.exports = {
         stream.pipe(fs.createWriteStream(`${path}/${encodeURIComponent(filename)}.mp4`));
 
         // SET LISTENERS
-        // if (isFunction(startFn)) {
         stream.once('response', () => {
             // starttime = Date.now();
             startFn(videoInfo);
         });
-        // }
 
         // if (isFunction(progress_cb)) {
         //     stream.on('progress', (chunkLength, downloaded, total) => {
@@ -116,9 +112,7 @@ module.exports = {
         //     })
         // }
 
-        // if (isFunction(endFm)) {
         stream.on('end', () => endFn(videoInfo));
-        // }
 
         stream.on('error', () => errorFn(videoInfo));
     }
@@ -169,10 +163,10 @@ module.exports = {
         const fileData = { name: filename, type };
             
         request(uri)
-        .on('response', function (response) {
+        .on('response', function () {
             startFn(fileData)
         })
-        .on('error', function (err) {
+        .on('error', function () {
             errorFn(fileData)
         })
         .pipe(fs.createWriteStream(`${path}/${filename}.${type}`))
@@ -182,26 +176,3 @@ module.exports = {
     });
 },
 }
-
-// const linkCheck = require('link-check');
- 
-// linkCheck('http://sdkjadksj.com/', function (err, result) {
-//     if (err) {
-//         console.error(err);
-//         return;
-//     }
-//     console.log(`${result.link} is ${result.status}`);
-// });
-
-// Unzip webpage folder, locate path to index.html
-// -------------------------------------------------------------------------------------
-// fs.createReadStream(zipPath)
-//     .pipe(unzipper.Extract({ path: folderPath }))
-//     .on("finish", () => {
-//         find.file(folderPath, function (files) {
-//             console.log(files.find(filename => filename.includes("index.html")))
-//         })
-
-//         fs.unlink(zipPath, () => console.log("zip removed"))
-
-//     });

@@ -6,6 +6,11 @@ var io = require('socket.io')(http);
 const fs = require('fs');
 const PORT = process.env.PORT || 3001;
 
+const { downloadWebsite, downloadStream, downloadFile } = require("./downloaders");
+const linkCheck = require('link-check');
+const ytdl = require('ytdl-core')
+const { path } = require("./config")
+
 // Define middleware here
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -19,22 +24,8 @@ http.listen(PORT, function () {
   console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`);
 });
 
-// Run test command
-// const execSh = require("exec-sh");
-// execSh("cd client && npm start", function(err){
-//   if (err) {
-//     console.log("Exit code: ", err.code);
-//     return;
-//   }
-// });
 
-const { downloadWebsite, downloadStream, downloadFile } = require("./downloaders");
-const linkCheck = require('link-check');
-const ytdl = require('ytdl-core')
-
-
-// Download Path (create directory)
-const path = "../sg-downloads";
+// Download storage path (create directory if it does not already exist)
 if (!fs.existsSync(path)){
   fs.mkdirSync(path);
 }
