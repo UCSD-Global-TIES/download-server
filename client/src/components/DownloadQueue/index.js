@@ -1,14 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-import { ListItemAvatar, Avatar, 
-    // LinearProgress, Badge, Dialog, DialogTitle, Fab, 
-    List, ListItem, 
-    // ListItemIcon, 
-    ListItemText, ListSubheader, Button, ButtonGroup, InputAdornment, FormControl, InputLabel, Input, Typography } from "@material-ui/core";
+import { ListItemAvatar, Avatar, List, ListItem, ListItemText, ListSubheader, Button, ButtonGroup, InputAdornment, FormControl, InputLabel, Input, Typography } from "@material-ui/core";
 import SearchIcon from '@material-ui/icons/Search';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Beforeunload } from 'react-beforeunload';
-// import moment from "moment"
 
 import "../../utils/flowHeaders.min.css";
 import {faDownload, faChevronLeft, faChevronRight, faFilePdf, faFileAudio, faFileCode, faFileCsv, faFileImage, faFileArchive, faFileAlt, faFileDownload, faFileVideo, faFileWord, faFileExcel } from "@fortawesome/free-solid-svg-icons";
@@ -51,16 +46,6 @@ function DownloadQueue(props) {
     const [downloads, setDownloads] = useState([]);
     const [filteredDownloads, setFilteredDownloads] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
-    // const [modalShow, setModalShow] = useState(false);
-    // const [PROPS, setProps] = useState(props);
-
-    // const handleClose = () => {
-    //     setModalShow(false);
-    // };
-
-    // const handleOpen = () => {
-    //     setModalShow(true);
-    // };
 
     // HANDLE QUERY CHANGE
     const handleQueryChange = (event) => {
@@ -86,18 +71,6 @@ function DownloadQueue(props) {
         setPageIdx(pageIdx + direction)
 
     }
-
-    // function convertFileSize(bytes, decimals = 2) {
-    //     if (bytes === 0) return '0 Bytes';
-
-    //     const k = 1024;
-    //     const dm = decimals < 0 ? 0 : decimals;
-    //     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-    //     const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-    //     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-    // }
 
     const handleQueueUpdate = (fileData) => {
         // Locate file in downloads
@@ -158,15 +131,8 @@ function DownloadQueue(props) {
 
             <div className={classes.vc} >
 
-                {/* <Fab aria-label={"View Uploads"} onClick={handleOpen} className={classes.fab} color={'primary'}>
-                    <Badge color="secondary" badgeContent={downloads.filter((item) => item.status === "Pending").length} children={<FontAwesomeIcon size="lg" icon={faCloudUploadAlt} />} />
-
-                </Fab> */}
-
                 <Beforeunload onBeforeunload={downloads.filter((item) => item.status === "Started").length ? () => "You have pending downloads, are you sure you want to leave this page?" : (e) => e} />
 
-                {/* <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={modalShow} >
-                    <DialogTitle id="simple-dialog-title">Downloads ({downloads.filter((item) => item.status === "Started").length} pending)</DialogTitle> */}
                     <div style={{ padding: "1rem" }}>
 
 
@@ -224,10 +190,7 @@ function DownloadQueue(props) {
                                                         >
                                                             {file.status}
                                                         </Typography>
-                                                        {/* <span style={{ display: "block" }}>
-                                                            {file.percent} % | {convertFileSize(file.bytesLoaded)} of {convertFileSize(file.size)}
-                                                            <LinearProgress color={file.status === "Error" ? "secondary" : "primary"} variant="determinate" value={parseFloat(file.percent)} />
-                                                        </span> */}
+                                                        
                                                     </React.Fragment>
                                                 }
                                             />
@@ -250,9 +213,6 @@ function DownloadQueue(props) {
 
                         </List>
                     </div>
-                {/* </Dialog> */}
-
-
 
             </div>
         </div>
