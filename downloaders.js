@@ -2,14 +2,8 @@ const ytdl = require('ytdl-core');
 const scrape = require('website-scraper');
 const request = require("request");
 const metaScrape = require('html-metadata');
-const zipFolder = require("zip-folder");
+const zip = require("file-zip");
 const fs = require('file-system');
-const encodeURL = require('encodeurl')
-
-const encodeUrl = (url) => {
-
-    return encodeURL(url).replace("?", "%3F").replace("/", "%2F")
-}
 
 module.exports = {
     downloadWebsite: (url, path, startFn, endFn, errorFn) => {
@@ -71,7 +65,7 @@ module.exports = {
                 // const htmlPath = `${folderPath}/${result[0].filename}`
                 const zipPath = `${folderPath}.webzip`;
 
-                zipFolder(folderPath, zipPath, function (err) {
+                zip.zipFolder([folderPath], zipPath, function (err) {
                     if (err) {
                         errorFn(fileData);
                     } else {
@@ -96,7 +90,8 @@ module.exports = {
         // let starttime;
 
         // SET FILE UPLOAD DESTINATION
-        stream.pipe(fs.createWriteStream(`${path}/${encodeURIComponent(filename)}.mp4`));
+        const filePath = `${path}/${encodeURIComponent(filename)}.mp4`;
+        stream.pipe(fs.createWriteStream(filePath));
 
         // SET LISTENERS
         stream.once('response', () => {
@@ -112,7 +107,9 @@ module.exports = {
         //     })
         // }
 
-        stream.on('end', () => endFn(videoInfo));
+        stream.on('end', () => {
+            endFn(videoInfo)
+        });
 
         stream.on('error', () => errorFn(videoInfo));
     }

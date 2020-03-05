@@ -27,10 +27,10 @@
     "check-internet-connected": "^2.0.4",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "encodeurl": "^1.0.2",
     "exec-sh": "^0.3.4",
     "express": "^4.17.1",
     "file-system": "^2.2.2",
+    "file-zip": "^1.0.1",
     "find": "^0.3.0",
     "html-metadata": "^1.7.1",
     "if-env": "^1.0.4",
@@ -44,7 +44,6 @@
     "socket.io": "^2.3.0",
     "unzipper": "^0.10.9",
     "website-scraper": "^4.2.0",
-    "ytdl-core": "^2.0.0",
-    "zip-folder": "^1.0.0"
+    "ytdl-core": "^2.0.0"
   }
 }
