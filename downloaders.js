@@ -2,7 +2,7 @@ const ytdl = require('ytdl-core');
 const scrape = require('website-scraper');
 const request = require("request");
 const metaScrape = require('html-metadata');
-const zip = require("file-zip");
+const zip = require("zip-folder");
 const fs = require('file-system');
 
 module.exports = {
@@ -63,9 +63,12 @@ module.exports = {
             }).then(() => {
                 const folderPath = `${path}/${encodeURIComponent(filename)}`
                 // const htmlPath = `${folderPath}/${result[0].filename}`
-                const zipPath = `${folderPath}.webzip`;
+                // const zipPath = `${folderPath}.webzip`;
+                const zipPath = `${folderPath}.zip`;
 
-                zip.zipFolder([folderPath], zipPath, function (err) {
+                // endFn(fileData)
+
+                zip(folderPath, zipPath, function (err) {
                     if (err) {
                         errorFn(fileData);
                     } else {
