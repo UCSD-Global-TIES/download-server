@@ -63,8 +63,8 @@ module.exports = {
             }).then(() => {
                 const folderPath = `${path}/${encodeURIComponent(filename)}`
                 // const htmlPath = `${folderPath}/${result[0].filename}`
-                // const zipPath = `${folderPath}.webzip`;
-                const zipPath = `${folderPath}.zip`;
+                const zipPath = `${folderPath}.webzip`;
+                // const zipPath = `${folderPath}.zip`;
 
                 // endFn(fileData)
 
