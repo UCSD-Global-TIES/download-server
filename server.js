@@ -4,12 +4,16 @@ const cors = require('cors')
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 const fs = require('fs');
+const path = require("path")
+const open = require("open")
+require('dotenv').config()
+
 const PORT = process.env.PORT || 3001;
 
 const { downloadWebsite, downloadStream, downloadFile } = require("./downloaders");
 const linkCheck = require('link-check');
 const ytdl = require('ytdl-core')
-const { path } = require("./config")
+const { path: storagePath } = require("./config")
 
 // Define middleware here
 app.use(express.urlencoded({ extended: true }));
@@ -19,15 +23,27 @@ app.use(cors({
   exposedHeaders: ['Access-Control-Allow-Origin']
 }))
 
+// Serving build
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, 'client/build')));
+  app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+  });
+}
+
 // Start the API server
 http.listen(PORT, function () {
-  console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`);
+  console.log(`🌎  ==> API Server now listening on PORT ${PORT}`);
+  if (process.env.NODE_ENV === "production") {
+    open(`http://localhost:${PORT}`);
+    console.log(`The web server is now live at http://localhost:${PORT}!`);
+  }
 });
 
 
 // Download storage path (create directory if it does not already exist)
-if (!fs.existsSync(path)){
-  fs.mkdirSync(path);
+if (!fs.existsSync(storagePath)){
+  fs.mkdirSync(storagePath);
 }
 
 io.on('connection', function (client) {
@@ -78,7 +94,7 @@ io.on('connection', function (client) {
       case "website":
         validateUrl(url, type, (isValid) => {
           if (isValid) {
-            downloadWebsite(url, path, startFn, endFn, errorFn);
+            downloadWebsite(url, storagePath, startFn, endFn, errorFn);
             res.json({})
           } else res.json(null)
         })
@@ -87,7 +103,7 @@ io.on('connection', function (client) {
         validateUrl(url, type, (isValid) => {
           if (isValid) {
 
-            downloadStream(url, path, startFn, endFn, errorFn);
+            downloadStream(url, storagePath, startFn, endFn, errorFn);
             res.json({})
           } else res.json(null)
         })
@@ -95,7 +111,7 @@ io.on('connection', function (client) {
       case "file":
         validateUrl(url, type, (isValid) => {
           if (isValid) {
-            downloadFile(url, path, startFn, endFn, errorFn);
+            downloadFile(url, storagePath, startFn, endFn, errorFn);
             res.json({})
           } else res.json(null)
         })
@@ -111,7 +127,7 @@ io.on('connection', function (client) {
   const checkInternetConnected = require('check-internet-connected');
   app.get("/api/connection", (req, res) => {
     const testNetworkSpeed = new NetworkSpeed();
-    
+
     async function getNetworkDownloadSpeed() {
       const baseUrl = 'http://eu.httpbin.org/stream-bytes/50000000';
       const fileSizeInBytes = 50000000;
@@ -120,12 +136,12 @@ io.on('connection', function (client) {
     }
 
     checkInternetConnected()
-    .then(() => {
-      getNetworkDownloadSpeed();
-    })
-    .catch(() => {
-      res.json(null); 
-    });
+      .then(() => {
+        getNetworkDownloadSpeed();
+      })
+      .catch(() => {
+        res.json(null);
+      });
 
 
 
