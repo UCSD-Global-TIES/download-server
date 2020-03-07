@@ -18,6 +18,27 @@ npm i
 npm start
 ```
 
+### Running the optimized production build
+1. Clone the repo
+```
+git clone https://github.com/matteuc/download-server.git
+```
+
+2. Install dependencies
+```
+npm i
+```
+
+3. Generate the production build
+```
+npm run build
+```
+
+4. Start the server (link to web page will be logged to console)
+```
+npm run start:prod
+```
+
 #### Notes
 - Running the server will automatically create a folder called *sg-downloads* in the same directory as the repository; this folder will store all files downloaded with the server
 
@@ -25,7 +46,7 @@ npm start
 
 *The download server was designed for non-technical people in mind. As such, the download server may also be installed onto a external drive and ran as an executable.*
 
-1. Do steps 1 & 2 of the 'Basic Installation' process (on the external drive)
+1. Do steps 1-3 of the 'Running the optimized production build' process (on the external drive)
 
 2. Package the server
 ```

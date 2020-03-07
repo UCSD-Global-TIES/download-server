@@ -65,3 +65,5 @@ client/.env
 download-server-linux
 download-server-macos
 download-server-win.exe
+
+client/build
